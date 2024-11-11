@@ -1,20 +1,29 @@
 package com.example.springcloudstreamkafka;
 
-import org.springframework.cloud.stream.function.StreamBridge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
+
+import java.util.function.Supplier;
 
 @Service
 public class KafkaProducer {
 
-    private final StreamBridge streamBridge;
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
-    public KafkaProducer(StreamBridge streamBridge) {
-        this.streamBridge = streamBridge;
+    @Bean
+    public Sinks.Many<Message<String>> many() {
+        return Sinks.many().unicast().onBackpressureBuffer();
     }
 
-    public void sendMessage(String message) {
-        // Send the message to Kafka using Spring Cloud Stream
-        streamBridge.send("output", message);
+    @Bean
+    public Supplier<Flux<Message<String>>> supply(Sinks.Many<Message<String>> many) {
+        return () -> many.asFlux()
+                .doOnNext(m -> LOGGER.info("Sending message {}", m))
+                .doOnError(t -> LOGGER.error("Error encountered", t));
     }
 }
-

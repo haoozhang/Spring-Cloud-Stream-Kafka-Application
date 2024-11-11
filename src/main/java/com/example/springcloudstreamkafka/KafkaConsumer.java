@@ -1,19 +1,20 @@
 package com.example.springcloudstreamkafka;
 
-
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.util.function.Consumer;
+
 @Service
-@EnableBinding(Sink.class)  // Binding to the 'input' channel
 public class KafkaConsumer {
 
-    @StreamListener(Sink.INPUT)  // Listen on the 'input' channel (Kafka topic)
-    public void consumeMessage(Message<String> message) {
-        System.out.println("Consumed message: " + message.getPayload());
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumer.class);
+
+    @Bean
+    public Consumer<Message<String>> consume() {
+        return message -> LOGGER.info("Received message: '{}'", message.getPayload());
     }
 }
-

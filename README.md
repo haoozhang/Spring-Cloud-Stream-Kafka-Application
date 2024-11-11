@@ -2,7 +2,30 @@
 
 This is a sample application for Spring Cloud Stream and Kafka.
 
+1. Provision Azure Event Hub with Kafka API enabled.
+1. Fill the Kafka namespace and auth information in the `application.yaml`.
+1. Start this Spring Boot application.
+1. GET `http://localhost:8080/send?message=Hello` to manually send a message to Kafka.
+1. You will see the log like `Received message: Hello`.
 
-1. Run `docker-compose up -d` to start the Kafka in Docker.
-2. Start this Spring Boot application.
-3. GET `http://localhost:8080/send?message=HelloSpringCloudStream` to send a message to Kafka.
+## Connection String Auth
+
+```yaml
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: <Connection_String>
+```
+
+## Managed Identity Auth
+
+```yaml
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        credential:
+          managed-identity-enabled: true
+          client-id: <Client_Id>
+```

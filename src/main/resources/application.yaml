@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    function:
+      definition: consume;supply
+    stream:
+      kafka:
+        binder:
+          brokers: <Kafka_Namespace>.servicebus.windows.net:9093
+      bindings:
+        consume-in-0:
+          destination: sample-topic
+          group: $Default
+        supply-out-0:
+          destination: sample-topic
+      binders:
+        kafka:
+          environment:
+            spring:
+              main:
+                # The AzureEventHubsKafkaAutoConfiguration package path is different in Spring Cloud Azure 4.x and 5.x versions:
+                # 4.x: com.azure.spring.cloud.autoconfigure.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration
+                # 5.x: com.azure.spring.cloud.autoconfigure.implementation.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration
+                sources: com.azure.spring.cloud.autoconfigure.implementation.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration
+    azure:
+      eventhubs:
+        # Managed Identity Auth
+        # credential:
+        #   managed-identity-enabled: true
+        #   client-id: <Client_Id>
+        connection-string: <Connection_String>
