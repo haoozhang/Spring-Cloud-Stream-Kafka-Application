@@ -27,4 +27,4 @@ spring:
         # credential:
         #   managed-identity-enabled: true
         #   client-id: <Client_Id>
-        connection-string: <Connection_String>
+        # connection-string: <Connection_String>
